@@ -28,6 +28,13 @@ module.exports = app => {
         next();
     });
 
+    app.use((req, res, next) => {
+        if (req.user) {
+            res.locals.isAdmin = req.user.roles.indexOf('Admin') !== -1;
+        }
+        next();
+    });
+
     app.set('view engine', '.hbs');
 
     app.use(express.static('./static'));
