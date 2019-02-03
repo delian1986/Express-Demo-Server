@@ -12,9 +12,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.method({
     authenticate: function (password) {
-        let inputPasswordHash = encryption.hashPassword(password, this.salt);
-        let isSamePasswordHash = inputPasswordHash === this.passwordHash;
-        return isSamePasswordHash;
+        return encryption.generateHashedPassword(this.salt, password) === this.hashedPass;
     },
 
     isAuthor: function (article) {
