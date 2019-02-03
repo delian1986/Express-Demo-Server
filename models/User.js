@@ -12,9 +12,26 @@ const userSchema = new mongoose.Schema({
 
 userSchema.method({
     authenticate: function (password) {
-        return encryption.generateHashedPassword(this.salt, password) === this.hashedPass;
+        let inputPasswordHash = encryption.hashPassword(password, this.salt);
+        let isSamePasswordHash = inputPasswordHash === this.passwordHash;
+        return isSamePasswordHash;
+    },
+
+    isAuthor: function (article) {
+        if (!article) {
+            return false;
+        }
+
+        let isAuthor = article.author.equals(this.id);
+
+        return isAuthor;
+    },
+
+    isInRole: function (role) {
+        return this.roles.indexOf(role) !== -1;
     }
 });
+
 
 const User = mongoose.model('User', userSchema);
 
