@@ -7,6 +7,7 @@ module.exports = {
            const product=await Product.findById(productId)
            res.render('order/place',product)
            
+
        } catch (e) {
        
        }
