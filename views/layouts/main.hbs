@@ -3,39 +3,33 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Doner Place</title>
+    <title>My Demo Server</title>
     <link href="/css/site.css" type="text/css" rel="stylesheet">
-    <link href="/favicon.ico" rel="icon" type="image/x-icon" />
 </head>
 
 <body>
     <div class="container">
         <header>
-            <span class="logo">Doner Place</span>
-            {{#if isAdmin}}
-            <li><a class="button" href="#">All Orders</a></li>
-            <li><a class="button" href="product/create">Create Product</a></li>
-            {{/if}}
-
-            {{#if user}}
-            <span class="greeting">Welcome, {{user.username}}! | <a href="/user/logout">[logout]</a></span>
             <ul class="menu">
-                <li><a class="button" href="index.html">Home</a></li>
-                <li><a class="button" href="order-status.html">Order Status</a></li>
-
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                {{#if currentUser}}
+                <li>{{currentUser.username}}</li>
+                <li>
+                    <form id="logout-form" action="/logout" method="post"></form>
+                    <a href="javascript:document.getElementById('logout-form').submit()">Logout</a>
+                </li>
                 {{else}}
-                <li><a class="button" href="/user/login">Login</a></li>
-                <li><a class="button" href="/user/register">Register</a></li>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+                {{/if}}
             </ul>
-            {{/if}}
         </header>
         <main>
             {{#if globalError}}
             <span>{{globalError}}</span> {{/if}} {{{body}}}
         </main>
     </div>
-    <footer>Doner Place &copy; 2017</footer>
-
 </body>
 
 </html>
