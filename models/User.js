@@ -8,7 +8,6 @@ const userSchema = new mongoose.Schema({
     lastName: { type: mongoose.Schema.Types.String },
     salt: { type: mongoose.Schema.Types.String, required: true },
     roles: [{ type: mongoose.Schema.Types.String }],
-    orders:[{type:mongoose.Schema.Types.ObjectId,ref:'Order'}]
 });
 
 userSchema.method({
@@ -28,11 +27,8 @@ userSchema.method({
 
     isInRole: function (role) {
         return this.roles.indexOf(role) !== -1;
-    },
-    //idk if this work ?
-    myOrders:function(){
-        return this.user.orders
     }
+   
 });
 
 

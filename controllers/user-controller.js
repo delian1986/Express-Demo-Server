@@ -10,6 +10,12 @@ module.exports = {
         const salt = encryption.generateSalt();
         const hashedPass =
             encryption.generateHashedPassword(salt, reqUser.password);
+
+        if (reqUser.password !== '' && reqUser.password !== reqUser.repeatPassword) {
+            res.locals.globalError = 'Passwords must match';
+            return res.render('user/register');
+        }
+
         try {
             const user = await User.create({
                 username: reqUser.username,
