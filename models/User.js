@@ -1,58 +1,67 @@
 const mongoose = require('mongoose');
 const encryption = require('../util/encryption');
+const Schema = mongoose.Schema;
 
-const userSchema = new mongoose.Schema({
-    username: { type: mongoose.Schema.Types.String, required: true, unique: true },
-    hashedPass: { type: mongoose.Schema.Types.String, required: true },
-    firstName: { type: mongoose.Schema.Types.String },
-    lastName: { type: mongoose.Schema.Types.String },
-    salt: { type: mongoose.Schema.Types.String, required: true },
-    roles: [{ type: mongoose.Schema.Types.String }],
-    orders:[{type:mongoose.Schema.Types.ObjectId,ref:'Order'}]
+const userSchema = new Schema({
+   password: {
+    type: String,
+    required: true
+  },
+  username: {
+    type: String,
+    required: true
+  },
+  salt: {
+    type: String,
+    required: true
+  },
+  roles:
+    [{
+      type: String
+    }],
+  enrolledCourses:
+    [{
+      type:Schema.Types.ObjectId,
+      ref:'Course'
+    }],
+    watchedVideos:
+    [{
+      type:Schema.Types.ObjectId,
+      ref:'Lecture'
+    }]
 });
 
 userSchema.method({
-    authenticate: function (password) {
-        return encryption.generateHashedPassword(this.salt, password) === this.hashedPass;
-    },
+  authenticate: function (password) {
+    const currentHashedPass = encryption.generateHashedPassword(this.salt, password);
 
-    isAuthor: function (article) {
-        if (!article) {
-            return false;
-        }
-
-        let isAuthor = article.author.equals(this.id);
-
-        return isAuthor;
-    },
-
-    isInRole: function (role) {
-        return this.roles.indexOf(role) !== -1;
-    },
-    //idk if this work ?
-    myOrders:function(){
-        return this.user.orders
-    }
-});
+    return currentHashedPass === this.password;
+  },
+  isInRole: function (role) {
+    return this.roles.indexOf(role) !== -1;
+  }
+})
 
 
 const User = mongoose.model('User', userSchema);
 
 User.seedAdminUser = async () => {
-    try {
-        let users = await User.find();
-        if (users.length > 0) return;
-        const salt = encryption.generateSalt();
-        const hashedPass = encryption.generateHashedPassword(salt, 'Admin');
-        return User.create({
-            username: 'Admin',
-            salt,
-            hashedPass,
-            roles: ['Admin']
-        });
-    } catch (e) {
-        console.log(e);
-    }
+  try {
+    let users = await User.find();
+    if (users.length > 0) return;
+    const salt = encryption.generateSalt();
+    const password = encryption.generateHashedPassword(salt, 'Admin');
+    return User.create({
+      username: 'Admin',
+      
+      salt,
+      password,
+      roles: ['Admin']
+    });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
-module.exports = User;
+
+module.exports = User
